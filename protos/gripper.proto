@@ -1,0 +1,234 @@
+PROTO armRobot [
+  field SFVec3f    translation     0 0 0.025                 # Is `Transform.translation`.
+  #field SFRotation rotation        0 0 1 0               # Is `Transform.rotation`.
+  field SFString   name         "BERRY"                  # Is `Solid.name`.
+  field SFString   controller      "arm_tutorial"  # Is `Robot.controller`.
+  field MFString   controllerArgs  []                    # Is `Robot.controllerArgs`.
+  field SFString   customData      ""                    # Is `Robot.customData`.
+  field SFBool     supervisor      FALSE                 # Is `Robot.supervisor`.
+  field SFBool     synchronization TRUE                  # Is `Robot.synchronization`.
+  field MFNode     handSlot        []                    # Extends the arm with new nodes in the hand slot.
+  #field SFBool    staticBase      FALSE                 # Defines if the robot base should be pinned to the static environment.
+  field  SFBool    selfCollision   TRUE     # Is `Robot.selfCollision`.
+
+]
+{
+  Robot {
+    selfCollision IS selfCollision
+    translation IS translation
+    #rotation IS rotation
+    name IS name
+    children [
+      Transform {
+        children [
+          DEF link0 Shape {
+            appearance PBRAppearance {
+              baseColor 0 1 1
+              roughness 1
+              metalness 0
+            }
+            geometry Box {
+              size 1 1 0.05
+            }
+          }
+        ]
+      }
+      DEF j1 HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 0 1
+          anchor 0 0 0.025
+        }
+        device [
+          DEF motor1 RotationalMotor {
+            name "motor1"
+            minPosition -3.14
+            maxPosition 3.14
+            maxTorque 10000
+          }
+          DEF ps1 PositionSensor {
+            name "ps1"
+          }
+        ]
+        endPoint DEF solid1 Solid {
+          translation 0.0125 0 0.075
+          rotation 0 0 1 0
+          children [
+            DEF link1 Shape {
+              appearance PBRAppearance {
+                baseColor 1 0 0
+                roughness 1
+                metalness 0
+              }
+              geometry Box {
+                size 0.025 0.05 0.1
+              }
+            }
+            DEF j2 HingeJoint {
+              jointParameters HingeJointParameters {
+                anchor -0.0125 0 0.025
+              }
+              device [
+                DEF ps2 PositionSensor {
+                  name "ps2"
+                }
+                DEF motor2 RotationalMotor {
+                  name "motor2"
+                  minPosition -3.14
+                  maxPosition 3.14
+                  maxTorque 10000
+                }
+              ]
+              endPoint DEF solid2 Solid {
+                translation -0.025 0 0.1
+                rotation 1 0 0 0
+                children [
+                  DEF link2 Shape {
+                    appearance PBRAppearance {
+                      roughness 1
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.025 0.05 0.2
+                    }
+                  }
+                  DEF j3 HingeJoint {
+                    jointParameters HingeJointParameters {
+                      anchor 0.0125 0 0.075
+                    }
+                    device [
+                      DEF ps3 PositionSensor {
+                        name "ps3"
+                      }
+                      DEF motor2 RotationalMotor {
+                        name "motor3"
+                        minPosition -3.14
+                        maxPosition 3.14
+                        maxTorque 10000
+                      }
+                    ]
+                    endPoint DEF solid3 Solid {
+                      translation 0.025 0 0.15
+                      rotation 1 0 0 0
+                      children [
+                        DEF link3 Shape {
+                          appearance PBRAppearance {
+                            roughness 1
+                            metalness 0
+                          }
+                          geometry Box {
+                            size 0.025 0.05 0.2
+                          }
+                        }
+                        DEF j4 HingeJoint {
+                          jointParameters HingeJointParameters {
+                            axis 0 0 1
+                            anchor 0 0 0.075
+                          }
+                          device [
+                            DEF ps4 PositionSensor {
+                              name "ps4"
+                            }
+                            DEF motor4 RotationalMotor {
+                              name "motor4"
+                              minPosition -3.14
+                              maxPosition 3.14
+                              maxTorque 10000
+                            }
+                          ]
+                          endPoint DEF solid4 Solid {
+                            translation 0 0 0.15
+                            rotation 0 0 1 0
+                            children [
+                              DEF link4 Shape {
+                                appearance PBRAppearance {
+                                  baseColor 1 0 0
+                                  roughness 1
+                                  metalness 0
+                                }
+                                geometry Box {
+                                  size 0.025 0.05 0.1
+                                }
+                              }
+                              DEF j5 HingeJoint {
+                                jointParameters HingeJointParameters {
+                                  anchor -0.0125 0 0.025
+                                }
+                                device [
+                                  DEF ps5 PositionSensor {
+                                    name "ps5"
+                                  }
+                                  DEF motor5 RotationalMotor {
+                                    name "motor5"
+                                    minPosition -3.14
+                                    maxPosition 3.14
+                                    maxTorque 10000
+                                  }
+                                ]
+                                endPoint DEF solid5 Solid {
+                                  translation -0.025 0 0.05
+                                  rotation 1 0 0 0
+                                  children [
+                                    Transform {
+                                      #translation 0.06 0 0
+                                      #rotation 0.5773502691896257 0.5773502691896257 0.5773502691896257 2.094399693899575
+                                      translation 0 0 0
+                                      rotation 0 0 1 0
+                                      children IS handSlot
+                                    }
+                                    DEF link5 Shape {
+                                      appearance PBRAppearance {
+                                        baseColor 1 0 1
+                                        roughness 1
+                                        metalness 0
+                                      }
+                                      geometry Box {
+                                        size 0.025 0.05 0.1
+                                      }
+                                    }
+                                  ]
+                                  name "solid5"
+                                  boundingObject USE link5
+                                  physics Physics {
+                                  }
+                                }
+                              }
+                            ]
+                            name "solid4"
+                            boundingObject USE link4
+                            physics Physics {
+                            }
+                          }
+                        }
+                      ]
+                      name "solid3"
+                      boundingObject USE link3
+                      physics Physics {
+                      }
+                    }
+                  }
+                ]
+                name "solid2"
+                boundingObject USE link2
+                physics Physics {
+                }
+              }
+            }
+          ]
+          name "solid1"
+          boundingObject USE link1
+          physics Physics {
+          }
+        }
+      }
+    ]
+    boundingObject USE link0
+    physics Physics {
+    }
+
+    controller IS controller
+    controllerArgs IS controllerArgs
+    customData IS customData
+    supervisor IS supervisor
+    synchronization IS synchronization
+  }
+}
