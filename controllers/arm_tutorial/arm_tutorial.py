@@ -76,16 +76,26 @@ class robot(Supervisor):
             if math.sqrt(pos_err) < 0.0001:
                 break
 
-            if set_pan:
-                self.getDevice('pen').write(True)
+
 
     def draw_circle(self, set_pan=True, from_zero=False):
         print('Draw a circle on the paper sheet...')
+        target = self.getFromDef('TABLE_WITH_PAPER_SHEET')
+        targetPosition = target.getPosition()
+        armPosition = self.arm.getPosition()
+        print(targetPosition)
+        print(armPosition)
+        x0 = targetPosition[0] - armPosition[0]
+        y0 = targetPosition[1] - armPosition[1] + 0.08
+        z0 = targetPosition[2] - armPosition[2] + 0.17
+        print(x0, y0, z0)
+        self.getDevice('pen').write(True)
         counter_t = 0
+
         for counter in range(100):
-            x = 0.25 * math.cos(2*math.pi*counter_t/100) - 0
-            y = 0.25 * math.sin(2*math.pi*counter_t/100) - 0
-            z = 0.125
+            x = 0.1 * math.cos(2*math.pi*counter_t/100) + x0
+            y = 0.1 * math.sin(2*math.pi*counter_t/100) + y0
+            z = z0
             counter_t= counter_t+1
             self.run(x,y,z, set_pan, from_zero)
 
@@ -102,8 +112,8 @@ class robot(Supervisor):
         print(x, y, z)
         self.run(x,y,z, False, True)
 
-    def move_to(self):
-        print('Move to...')
+    def draw_line(self):
+        print('draw_line')
         target = self.getFromDef('TABLE_WITH_PAPER_SHEET')
         targetPosition = target.getPosition()
         armPosition = self.arm.getPosition()
@@ -113,11 +123,9 @@ class robot(Supervisor):
         y = targetPosition[1] - armPosition[1]
         z = targetPosition[2] - armPosition[2] + 0.17
         print(x, y, z)
-        self.run(x,y,z, True, True)
-        self.run(x,y+0.02,z, True, True)
-        self.run(x,y+0.04,z, True, True)
-        self.run(x,y+0.06,z, True, True)
-        self.run(x,y+0.08,z, True, True)
+        self.getDevice('pen').write(True)
+        for dy in range(0, 10, 1):
+            self.run(x,y+dy/100,z, True, True)
 
     def move_to_zero_point(self):
         print('Move arm to zero point...')
@@ -133,7 +141,9 @@ class robot(Supervisor):
 
 
 robot_obj = robot()
-robot_obj.move_to()
-#robot_obj.draw_circle(False, False)
-#robot_obj.move_to_sphere()
-#robot_obj.move_to_zero_point()
+robot_obj.draw_line()
+robot_obj.move_to_zero_point()
+robot_obj.draw_circle(True, True)
+robot_obj.move_to_sphere()
+robot_obj.move_to_zero_point()
+
