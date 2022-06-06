@@ -1,6 +1,6 @@
 PROTO armRobot [
   field SFVec3f    translation     0 0 0.025                 # Is `Transform.translation`.
-  #field SFRotation rotation        0 0 1 0               # Is `Transform.rotation`.
+  field SFRotation rotation        0 0 0 0               # Is `Transform.rotation`.
   field SFString   name         "BERRY"                  # Is `Solid.name`.
   field SFString   controller      "arm_tutorial"  # Is `Robot.controller`.
   field MFString   controllerArgs  []                    # Is `Robot.controllerArgs`.
@@ -16,7 +16,7 @@ PROTO armRobot [
   Robot {
     selfCollision IS selfCollision
     translation IS translation
-    #rotation IS rotation
+    rotation IS rotation
     name IS name
     children [
       Transform {
@@ -51,7 +51,7 @@ PROTO armRobot [
         ]
         endPoint DEF solid1 Solid {
           translation 0.0125 0 0.075
-          rotation 0 0 1 0
+          rotation 0 0 0 0
           children [
             DEF link1 Shape {
               appearance PBRAppearance {
@@ -65,6 +65,7 @@ PROTO armRobot [
             }
             DEF j2 HingeJoint {
               jointParameters HingeJointParameters {
+                axis 1 0 0
                 anchor -0.0125 0 0.025
               }
               device [
@@ -84,6 +85,7 @@ PROTO armRobot [
                 children [
                   DEF link2 Shape {
                     appearance PBRAppearance {
+                      baseColor 0 1 0
                       roughness 1
                       metalness 0
                     }
@@ -112,6 +114,7 @@ PROTO armRobot [
                       children [
                         DEF link3 Shape {
                           appearance PBRAppearance {
+                            baseColor 0 0 0
                             roughness 1
                             metalness 0
                           }

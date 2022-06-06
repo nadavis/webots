@@ -4,8 +4,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 0.85
-  orientation 0.0486124786549352 0.08923565925598109 -0.994823514014508 1.8140094427298565
-  position -4.356745588781765 1.722917028438257 1.473641499317643
+  orientation -0.2811631625740644 -0.051036626841631655 0.9583019037505762 3.4861575445407342
+  position -3.2825390343992558 0.508215260704162 2.190630720856971
 }
 TexturedBackground {
   texture "empty_office"
@@ -31,43 +31,22 @@ Floor {
 }
 armRobot {
   translation -4.84 0 0.765
+  rotation 0 0 1 3.14159
   controller "<extern>"
   supervisor TRUE
   handSlot [
-    Pen {
-      translation 0 0 0.07
+    Transform {
+      translation 0 0.07 -0.05
+      rotation 0 0 1 -1.5708
       children [
-        Transform {
-          children [
-            Shape {
-              appearance BrushedAluminium {
-                colorOverride 0 0.4131074998092622 0.9919279774166476
-              }
-              geometry Cylinder {
-                height 0.05
-                radius 0.01
-                subdivision 24
-              }
-            }
-          ]
-        }
-        Transform {
-          children [
-            Shape {
-              appearance BrushedAluminium {
-                colorOverride 0 0 0
-              }
-              geometry Cylinder {
-                height 0.07
-                radius 0.002
-                subdivision 12
-              }
-            }
-          ]
+        Camera {
+          rotation 0 1 0 -1.57079
+          width 320
+          height 240
         }
       ]
-      leadSize 0.01
-      maxDistance 0.05
+    }
+    DEF solid_gripper gripper {
     }
   ]
 }
@@ -118,37 +97,16 @@ DEF TABLE_WITH_PAPER_SHEET Transform {
   ]
 }
 DEF TARGET Solid {
-  translation -4.6 0.2 1
+  translation -4.6 0.2 0.95
   children [
     Shape {
       appearance PBRAppearance {
-        baseColorMap ImageTexture {
-          url [
-            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/robots/abb/irb/worlds/textures/target.png"
-          ]
-        }
-        roughnessMap ImageTexture {
-          url [
-            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/robots/abb/irb/worlds/textures/target.png"
-          ]
-        }
-        metalnessMap ImageTexture {
-          url [
-            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/robots/abb/irb/worlds/textures/target.png"
-          ]
-        }
-        emissiveColorMap ImageTexture {
-          url [
-            "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/robots/abb/irb/worlds/textures/target.png"
-          ]
-        }
-        textureTransform TextureTransform {
-          scale 2 1
-        }
+        baseColor 1 0 0
+        roughness 1
+        metalness 0
       }
-      geometry Sphere {
-        radius 0.05
-        subdivision 2
+      geometry Box {
+        size 0.04 0.04 0.1
       }
     }
   ]

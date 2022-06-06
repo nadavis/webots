@@ -9,7 +9,7 @@ class robot(Supervisor):
     def __init__(self):
         super().__init__()
 
-        self.IKPY_MAX_ITERATIONS = 4
+        self.IKPY_MAX_ITERATIONS = 8
         self.TIME_STEP = 32
 
         filename = None
@@ -39,8 +39,9 @@ class robot(Supervisor):
 
     def run_kinematics(self, x, y, z, initial_position, set_pan):
         ikResults = self.armChain.inverse_kinematics([x, y, z], max_iter=self.IKPY_MAX_ITERATIONS, initial_position=initial_position)
-        position_fk = self.armChain.forward_kinematics(ikResults)
-        squared_distance = (position_fk[0, 3] - x) ** 2 + (position_fk[1, 3] - y) ** 2 + (position_fk[2, 3] - z) ** 2
+        # position_fk = self.armChain.forward_kinematics(ikResults)
+        # squared_distance = (position_fk[0, 3] - x) ** 2 + (position_fk[1, 3] - y) ** 2 + (position_fk[2, 3] - z) ** 2
+        squared_distance = 0
 
         for i in range(5):
             self.motors[i].setPosition(ikResults[i + 1])
@@ -62,21 +63,23 @@ class robot(Supervisor):
 
         if from_zero:
             ikResults, squared_distance = self.run_kinematics(x, y, z, self.position_0, set_pan)
+        else:
+            position = [0] + [m.getPositionSensor().getValue() for m in self.motors] + [0]
+            ikResults, squared_distance = self.run_kinematics(x, y, z, position, set_pan)
 
         while self.step(self.TIME_STEP) != -1:
             position = [0] + [m.getPositionSensor().getValue() for m in self.motors] + [0]
 
-            if not from_zero:
-                ikResults, squared_distance = self.run_kinematics(x, y, z, position, set_pan)
+            # if not from_zero:
+            #     ikResults, squared_distance = self.run_kinematics(x, y, z, position, set_pan)
 
             pos_err = 0
             for i in range(1, end_motor):
                 pos_err += (ikResults[i] - position[i]) ** 2
 
             if math.sqrt(pos_err) < 0.0001:
+                print("end step")
                 break
-
-
 
     def draw_circle(self, set_pan=True, from_zero=False):
         print('Draw a circle on the paper sheet...')
@@ -112,7 +115,7 @@ class robot(Supervisor):
         print(x, y, z)
         self.run(x,y,z, False, True)
 
-    def draw_line(self):
+    def draw_line(self, set_pan=True, from_zero=False):
         print('draw_line')
         target = self.getFromDef('TABLE_WITH_PAPER_SHEET')
         targetPosition = target.getPosition()
@@ -125,7 +128,7 @@ class robot(Supervisor):
         print(x, y, z)
         self.getDevice('pen').write(True)
         for dy in range(0, 10, 1):
-            self.run(x,y+dy/100,z, True, True)
+            self.run(x,y+dy/100,z, set_pan, from_zero)
 
     def move_to_zero_point(self):
         print('Move arm to zero point...')
@@ -141,7 +144,7 @@ class robot(Supervisor):
 
 
 robot_obj = robot()
-robot_obj.draw_line()
+robot_obj.draw_line(True, True)
 robot_obj.move_to_zero_point()
 robot_obj.draw_circle(True, True)
 robot_obj.move_to_sphere()
